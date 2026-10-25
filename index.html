@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Конструктор тортов - Золотой Колос</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="hero-screen" id="hero-screen">
+        <header class="site-header">
+            <img src="https://zolotoykolos.ru/local/templates/zolotoykolos/images/logo.png" alt="Золотой Колос" onerror="this.src='https://via.placeholder.com/150x40/ffffff/9e1f24?text=ЗОЛОТОЙ+КОЛОС'">
+        </header>
+        <div class="hero-content">
+            <p class="hero-kicker">Золотой Колос представляет</p>
+            <h1>Соберите свой <br><em>эксклюзивный</em> торт</h1>
+            <p class="hero-subtitle">Ответьте на несколько вопросов, и мы рассчитаем предварительную стоимость вашего идеального праздничного десерта.</p>
+            <button class="btn-hero" onclick="startConstructor()">Начать сборку</button>
+        </div>
+    </div>
+
+    <div class="constructor-app" id="constructor-app" style="display: none;">
+        
+        <header class="app-header">
+            <img src="https://zolotoykolos.ru/local/templates/zolotoykolos/images/logo.png" alt="Логотип" class="app-logo" onerror="this.src='https://via.placeholder.com/150x40/ffffff/9e1f24?text=ЗОЛОТОЙ+КОЛОС'">
+        </header>
+        
+        <div class="progress-bar-container">
+            <div class="progress-inner">
+                <div class="step-indicator active" id="ind-1"><span>1</span><p>Событие</p></div>
+                <div class="step-line"></div>
+                <div class="step-indicator" id="ind-2"><span>2</span><p>Форма</p></div>
+                <div class="step-line"></div>
+                <div class="step-indicator" id="ind-3"><span>3</span><p>Вкус</p></div>
+                <div class="step-line"></div>
+                <div class="step-indicator" id="ind-4"><span>4</span><p>Галерея</p></div>
+                <div class="step-line"></div>
+                <div class="step-indicator" id="ind-5"><span>5</span><p>Итог</p></div>
+            </div>
+        </div>
+
+        <div class="main-layout">
+            
+            <!-- ЛЕВАЯ КОЛОНКА (3D THREE.JS) -->
+            <div class="visual-section">
+                <div class="visual-top">
+                    <div class="visual-title-box">
+                        <span class="v-label">Ваш торт</span>
+                        <span class="v-status" id="v-status">Круг • — кг</span>
+                    </div>
+                    <div class="visual-toggles">
+                        <button class="v-toggle active" id="btn-3d" onclick="setView('3d')">Объем</button>
+                        <button class="v-toggle" id="btn-top" onclick="setView('top')">Сверху</button>
+                    </div>
+                </div>
+
+                <!-- КОНТЕЙНЕР ДЛЯ 3D -->
+                <div class="cake-scene" id="cake-scene">
+                    <div class="canvas-container" id="canvas-container"></div>
+                </div>
+
+                <div class="visual-controls">
+                    <button class="rotate-btn" onclick="rotateLeft()">↺</button>
+                    <div class="zoom-box">
+                        <button onclick="zoomCake(-0.1)">−</button>
+                        <span id="zoom-val">100%</span>
+                        <button onclick="zoomCake(0.1)">+</button>
+                    </div>
+                    <button class="rotate-btn" onclick="rotateRight()">↻</button>
+                </div>
+                <span class="hint-text">Потяните торт, чтобы повернуть</span>
+
+                <div class="info-box">
+                    <p>Здесь — простые сочетания для быстрого заказа. А вообще мы можем сделать почти любой торт. Не получается собрать вашу задумку? Покажите её менеджеру — обсудим дизайн вместе.</p>
+                    <a href="#">Обсудить свой дизайн →</a>
+                </div>
+            </div>
+
+            <!-- ПРАВАЯ КОЛОНКА (ШАГИ) -->
+            <div class="steps-section">
+                <div class="steps-box">
+                    
+                    <!-- Шаг 1: Повод + Надпись -->
+                    <div class="step-content-block active" id="step-1">
+                        <h2>Событие</h2>
+                        <div class="options-grid" id="event-options">
+                            <div class="opt-btn" onclick="selectEvent('День Рождения', this)">День Рождения</div>
+                            <div class="opt-btn" onclick="selectEvent('Детский праздник', this)">Детский праздник</div>
+                            <div class="opt-btn" onclick="selectEvent('Юбилей', this)">Юбилей</div>
+                            <div class="opt-btn" onclick="selectEvent('Свадьба', this)">Свадьба</div>
+                            <div class="opt-btn" onclick="selectEvent('Выпускной', this)">Выпускной</div>
+                            <div class="opt-btn" onclick="selectEvent('Корпоратив', this)">Корпоратив</div>
+                        </div>
+                        <input type="text" class="custom-input" placeholder="Свой праздник..." oninput="selectCustomEvent(this.value)">
+                        
+                        <div class="text-block-spacer">
+                            <span class="sub-label">НАДПИСЬ НА ТОРТЕ</span>
+                            <input type="text" class="custom-input" id="cake-text" placeholder="Введите текст надписи" oninput="selectCustomText(this.value)" style="margin-top: 0;">
+                            <label class="checkbox-label"><input type="checkbox" id="no-text" onchange="toggleNoText(this.checked)"> Никакой, он и так прекрасен</label>
+                        </div>
+                    </div>
+
+                    <!-- Шаг 2 -->
+                    <div class="step-content-block" id="step-2">
+                        <h2>Форма и размер</h2>
+                        <div class="form-weight-layout">
+                            <div class="form-col">
+                                <span class="sub-label">Форма торта</span>
+                                <div class="options-grid shapes-grid" id="shape-options">
+                                    <div class="opt-card" onclick="selectShape('Круг', this)"><div class="shape-icon round"></div><span>Круг</span></div>
+                                    <div class="opt-card" onclick="selectShape('Квадрат', this)"><div class="shape-icon square"></div><span>Квадрат</span></div>
+                                    <div class="opt-card" onclick="selectShape('Фигурный', this)"><div class="shape-icon square"></div><span>Фигурный</span></div>
+                                    <div class="opt-card" onclick="selectShape('Многоярусный', this)"><div class="shape-icon multi"></div><span>Многоярусный</span></div>
+                                </div>
+                            </div>
+                            
+                            <div class="weight-col">
+                                <div class="weight-header">
+                                    <span class="sub-label">Количество гостей</span>
+                                    <span class="guest-count" id="guest-count">7</span>
+                                </div>
+                                <div class="slider-container">
+                                    <button class="slider-btn" onclick="changeGuests(-1)">−</button>
+                                    <input type="range" id="guest-slider" min="1" max="25" value="7" oninput="handleSlider(this.value)">
+                                    <button class="slider-btn" onclick="changeGuests(1)">+</button>
+                                </div>
+                                <span class="hint-small">Из расчета 150 г на человека</span>
+                                
+                                <span class="sub-label" style="margin-top:15px; display:block;">Вес торта</span>
+                                <div class="options-grid weight-grid" id="weight-options">
+                                    <div class="opt-btn" onclick="selectWeight(2, this)">2 кг</div>
+                                    <div class="opt-btn" onclick="selectWeight(2.5, this)">2.5 кг</div>
+                                    <div class="opt-btn" onclick="selectWeight(3, this)">3 кг</div>
+                                    <div class="opt-btn" onclick="selectWeight(3.5, this)">3.5 кг</div>
+                                    <div class="opt-btn" onclick="selectWeight(4, this)">4 кг</div>
+                                    <div class="opt-btn" onclick="selectWeight(4.5, this)">4.5 кг</div>
+                                    <div class="opt-btn" onclick="selectWeight(5, this)">5 кг</div>
+                                </div>
+                                <input type="number" class="custom-input" placeholder="Свой вес (кг)" min="2" step="0.1" oninput="selectCustomWeight(this.value)">
+                                <div class="calc-info" id="calc-info" style="display:none;">Порций: <b id="portions">0</b></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Шаг 3 -->
+                    <div class="step-content-block" id="step-3">
+                        <h2>Самое вкусное внутри</h2>
+                        <div class="filling-layout">
+                            <div class="filling-cats" id="filling-cats"></div>
+                            <div class="filling-grid" id="filling-grid"></div>
+                        </div>
+                    </div>
+
+                    <!-- Шаг 4 -->
+                    <div class="step-content-block" id="step-4">
+                        <h2>Галерея</h2>
+                        <div class="gallery-tabs">
+                            <button class="g-tab active" onclick="switchGalleryTab('Праздничные', this)">Праздничные</button>
+                            <button class="g-tab" onclick="switchGalleryTab('Свадебные', this)">Свадебные</button>
+                            <button class="g-tab" onclick="switchGalleryTab('Юбилейные', this)">Юбилейные</button>
+                        </div>
+                        <div class="gallery-grid" id="gallery-grid"></div>
+                        <div class="upload-zone" onclick="document.getElementById('file-up').click()">
+                            <input type="file" id="file-up" onchange="uploadPhoto(event)">
+                            <span>Загрузите фото вашего идеального торта</span>
+                        </div>
+                    </div>
+
+                    <!-- Шаг 5: Оформление заказа (ПРЕМИУМ ФОРМА) -->
+                    <div class="step-content-block" id="step-5">
+                        <h2>Оформление заказа</h2>
+                        <form id="order-form" class="prem-form" onsubmit="return submitOrder(event)">
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Ваше имя *</label>
+                                    <input type="text" id="f-name" class="custom-input" required placeholder="Иван Иванов">
+                                </div>
+                                <div class="form-group">
+                                    <label>Телефон *</label>
+                                    <input type="tel" id="f-phone" class="custom-input" required placeholder="+7 (___) ___-__-__">
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Дата события *</label>
+                                    <input type="date" id="f-date" class="custom-input" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Способ доставки</label>
+                                    <select class="custom-input">
+                                        <option>Самовывоз</option>
+                                        <option>Доставка</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <label class="premium-checkbox">
+                                <input type="checkbox" id="f-agree" required>
+                                <span class="checkmark"></span>
+                                <span>Я даю согласие на обработку моих персональных данных в соответствии с <a href="#" target="_blank">политикой конфиденциальности</a> *</span>
+                            </label>
+                            
+                            <!-- ИТОГИ (РАСТЯНУТЫ) -->
+                            <div class="summary-box" style="padding: 25px; margin-top: 10px; margin-bottom: 10px;">
+                                <div class="sum-row" style="padding: 12px 0; font-size: 14px;"><span>Событие:</span> <b id="sum-event">-</b></div>
+                                <div class="sum-row" style="padding: 12px 0; font-size: 14px;"><span>Форма:</span> <b id="sum-shape">-</b></div>
+                                <div class="sum-row" style="padding: 12px 0; font-size: 14px;"><span>Вес:</span> <b id="sum-weight">-</b></div>
+                                <div class="sum-row" style="padding: 12px 0; font-size: 14px;"><span>Порции:</span> <b id="sum-portions">-</b></div>
+                                <div class="sum-row" style="padding: 12px 0; font-size: 14px;"><span>Начинка:</span> <b id="sum-filling">-</b></div>
+                                <div class="sum-row" style="padding: 12px 0; font-size: 14px; border-bottom: none;"><span>Надпись:</span> <b id="sum-text">-</b></div>
+                            </div>
+                            
+                            <button type="submit" class="btn-submit" id="submit-btn" disabled>Оформить заказ</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="floating-footer" id="footer">
+            <button class="f-btn back" id="f-back" onclick="prevStep()" style="display:none;">← Назад</button>
+            <div class="f-price-box">
+                <span>Предварительная стоимость</span>
+                <div class="f-price" id="f-price">0 ₽</div>
+            </div>
+            <button class="f-btn next" id="f-next" onclick="nextStep()">Далее →</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
